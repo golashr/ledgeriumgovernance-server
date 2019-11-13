@@ -19,7 +19,7 @@ before_install:
 - echo "Testing Docker Hub credentials"
 - BUILDID="build-$RANDOM"
 - echo $BUILDID
-- docker build --pull --cache-from $IMAGE_NAME -t $IMAGE_NAME:v$BUILDID .
+- docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME:v$BUILDID" .
 - docker login -u=$DOCUSENAME -p=$DOCPASSWRD
 - echo "Docker Hub credentials are working"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
