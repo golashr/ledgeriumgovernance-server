@@ -17,9 +17,9 @@ before_install:
 - echo "Testing Docker Hub credentials"
 - BUILDID="build-$RANDOM"
 - echo $BUILDID
-- docker build --pull --cache-from ledgerappuser/ledgeriumgovernance_server --tag
-  ledgerappuser/ledgeriumgovernance_server:v$BUILDID .
-- docker login -u=$DOCUSENAME -p=$DOCPASSWRD
+- docker build --pull --cache-from ledgerappuser/ledgeriumgovernance_server --tag ledgerappuser/ledgeriumgovernance_server:v$BUILDID .
+- echo $DOCUSENAME
+- docker login -u=golra03 -p=abcd_1234
 - echo "Docker Hub credentials are working"
 - docker tag ledgerappuser/ledgeriumgovernance_server ledgerappuser/ledgeriumgovernance_server:latest
 - docker tag ledgerappuser/ledgeriumgovernance_server ledgerappuser/ledgeriumgovernance_server:v$BUILDID
