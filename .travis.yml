@@ -3,23 +3,22 @@ language: node_js
 node_js:
 - node
 env:
+  matrix:
   - SERVER_IP_ADDRESS=104.210.106.138
-  - USER=ledgerappuser
-  - IMAGE_NAME=ledgerappuser/ledgeriumgovernance_server  
+  global:
+    secure: Kn8amqLpb7I60kPG+hnZws7wSkDqGLDdDiIzRNpn1WgtTf4f+NzHp46Bkd/sJS9n/iQOoBE2O6E97Q4nXsSrCH+8UMjdzikDnglVBpfCGfNb1kHqAJvGDfnObCGXPKNz7HoFEkB6MFWyZfG672m2ekiAMr5HPGYn1QDvS7fGXoHtBJZ16YvNqsslO9ZUhr5JW7OzA5O0yw/x/65j1RjH0jR/6cP2sSRHxtbZWbsasvZYQC+2zapMNJRuhA07AwmxtLBnDbhEQ3yGW83tBkoK0j2nj0UAMYrN+Inpod52hxWIE6wYQ5nMMn28AXXUUPAQ+7lyHz6WY4BU+Qc/5sjaGIStkV6UagndudLWIBW0HgN+2Bm8zvMkC2KCuQHjJ+0XoaE/8udPbgUVpDxUeOlI2FQeuH5n/4nwuVgCYDp7kvnIehuVB56O6Qmmlr9x/7KAzOWTClw+iVqOGmm66ZqDjLENzFBnNthkcMdMzUJ3rLnH2oQ9Z4p2Ufy2Qhl2aHj42LzC2rERtlNlxymyPqWJo9ujBemi++cd/QcGLipjo1ufndWZcWtBOd5vwi3j7x9s3lx9Nc3/6tRHw0uM0rIvyLDiqjccz+oo80HuAaNiVGZajz51XBEADi22Mt1qDz1NzTxI23KsTWHmEZScbRcnfIOb7IDHP97YfNQjmUtGkeQ=
 services:
 - docker
 addons:
   ssh_known_hosts: 104.210.106.138
 before_install:
-#- sudo apt-get update
-#- npm install --unsafe-perm -g keccak
-#- npm install
 - echo "ledgerappuser/ledgeriumgovernance_server"
 - docker pull ledgerappuser/ledgeriumgovernance_server || true
 - echo "Testing Docker Hub credentials"
 - BUILDID="build-$RANDOM"
 - echo $BUILDID
-- docker build --pull --cache-from ledgerappuser/ledgeriumgovernance_server --tag ledgerappuser/ledgeriumgovernance_server:v$BUILDID .
+- docker build --pull --cache-from ledgerappuser/ledgeriumgovernance_server --tag
+  ledgerappuser/ledgeriumgovernance_server:v$BUILDID .
 - docker login -u=$DOCUSENAME -p=$DOCPASSWRD
 - echo "Docker Hub credentials are working"
 - docker tag ledgerappuser/ledgeriumgovernance_server ledgerappuser/ledgeriumgovernance_server:latest
@@ -27,7 +26,6 @@ before_install:
 script:
 - docker ps -a
 after_success:
-#- docker build . -t $DOCUSENAME/ledgeriumgovernance_server:v$BUILDID
 - docker push ledgerappuser/ledgeriumgovernance_server:v$BUILDID && docker push ledgerappuser/ledgeriumgovernance_server:latest
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_887211266452_key -iv $encrypted_887211266452_iv
@@ -44,7 +42,5 @@ deploy:
     && bash ./deploy_script.sh $BUILDID $DOCUSENAME"
   on:
     branch: master
-env:
-  global:
-    - secure: NdBitwnaHiOsjFcEVVRXQfzxspBTPmp+zzaa53xfNSiJvtFoRdkcc+TGse1YTPYlYb7Jgh+zZKtuutm7y7WUpV3J68PGTegSExKQIXbkU0yDfV8jpv7HKsSKACp7iv+M5zM1G2jFTa+HqsJ+lhKdB+Gklnouo46jxLw4Gqz6A0kEX0ZpUt5nnaFWHkxuo70sLBGQUMv7uR7JmiNJWbofdcbxqziYfjIAQJCj1zGQ2vLudR2zuSWysM095z9/h0aNncsZJwX4rV982SeccLSWz0slejwEKaByMGV+WK6HOzhhex9rPRKcC5s54IDfwHyfzPn7jQQhPsjNlOXJohdsAX6KwenNL2EGxwtTPkcFbGkeHjJ56a/0MJVzsgDiRyiLIApRuuAf38gF7MKyWocT0MGXPuWTl8ey6/1AF+ZpKOY822FAQvFa8l8XAVVJUL+DZExdiHmu4zVXlBS/K+4EjXCltTAvorBS9W1fBoL4WdSoXJV/3/0JfPn+2Nh0lOFd2ClFGLAXjwr43N/2iSLpsnOB3iZxmYo6hRvGUT+lm7CW0gZ0iSy7bPWOye+4NTIZHEDgWWSS03Ca1Lb3M68Fc93ywQZFvcnoMkjiqDMq6nRupzC5H9ZISqiqwB6Fz1PyeXdIj2c7My7PlOB0UP8/zSAUgAvYJboUBI3UQmKjyXU=
-    - secure: Fvb+9XV16S/QStH8WFiMHDdY+ZqQUgOrDATNqS7GIuGr/KUHT4SZwxVDWxS9+2aY3biM6ujJqLg4YPPGojcqeA8mTqcPKUAFVGpVdt+mQhROorouuQsmuBKkNZANQJuGjcDkO0DC9elY3kWByMIAbrSnqiOC4kP/KQUjDoGtnOaK+0h2/q4n44f2AMPHEDMzJKLhWE2mcE5ksgGddRuANKEXD25HUY+oUf4wAZxrb01CbGl0zAz38/AlRfW/TXAi42uULfVSdNbnZ2b5eWxMJABjPS55Tg0CYjglXFj4sGaf/L/DSdoOGXcotBnn1Y50pl+zeeEdAVKNkBigy/fPNoEsJ1E4QdSSz3b9BYFqT5BJ0rNg/wtLHVmjFBTyIUIE1OWf+h26x6rg5YoTxNl98JN0fEmBlzOgb/DAQmxTHfgw3icS7JF63aBLs5pSbv0dkUFHagyjkCxgq4ODf9Hq6F3E0VHbVY4EDU0d/GTsRL07W2yDyZEEHKi4y12pXjA6auOZnuHSbZWwVGU5SmrTi2jPVuNSQb7I6tU/9Qy4Y0ErRNhzCvB17iGt1m9pdJmcJGBHXxmSb+85Id99cRjgfFA6s4IHxJswNAmZs7oYn3gOhbbqmmgn8tgxnV4kzwEcdZEiEqHY1sd2vcsGHjnjTihV/0H1Ap+arkNxQg8bXuI=
+dd:
+  secure: Vo7FDhFGGN5q9pJewRTk/DFYbFDpRmvBsFIHL7zRKSgHeJa/jim3Ou3PcCZ9xoAuC3GVTTiEMLzFnmJBdk7JrMvqtn4WTmV9dzZp7O6SKVPJuvuBgqIxdtTCStDVjxXj6U5KKubQXh1StvxtN10m55nPUUBTrUl/crXlooa13F4ASrNhgzzCbVUogUOY83cJ4uBJfs0lZ66ZxGatKPyqX3cq7n4q3pTdxqSqpoP5v8zlzht2cDoBiSuAJ2XmyLapmmqcxaNWNByG1eaDdQBKFuLiZ3nnU0sucWhlY+40A+dnydIcHFBeM9puf+FCzACf/JWc+w+iqe2yLadIrC9OBIwrfKlbrLCh7D/mYo4ma6Wr05DcBWa355uetX24n/t9R2fP/CGXM8ChRZccAM4filZgdI+2rd5LyXl7RC937h+Xx4a4r8wbl8cehKLnm0S3e3ydcNUWHRwo15mN9SgGbX3Wrvr698ZfRs6LXG/TXD3nHO9BBWkVHEs6DJsmsYFWKpEQcpmXqS6o4A09GS/B9q6NYtvnCH0ebNpGyBQ//7pwDaVba0JoaFrBniHv3URez3KMHzklgDPz5ZXtWgYxD1cxUYjLNY7vBj8weZPwo4hxjLjOwmekkQW54dpDKnhAVlm2lnNOP5pHE5fbbYUHiR/Lo6CdImPP8qnCB4OEVUc=
