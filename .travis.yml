@@ -12,21 +12,22 @@ services:
 addons:
   ssh_known_hosts: 104.210.106.138
 before_install:
-- echo "ledgerappuser/ledgeriumgovernance_server"
-- docker pull ledgerappuser/ledgeriumgovernance_server || true
+- echo "ledgeriumengineering/ledgeriumgovernance_server"
+- docker pull ledgeriumengineering/ledgeriumgovernance_server || true
 - echo "Testing Docker Hub credentials"
 - BUILDID="build-$RANDOM"
 - echo $BUILDID
-- docker build --pull --cache-from ledgerappuser/ledgeriumgovernance_server --tag ledgerappuser/ledgeriumgovernance_server:v$BUILDID .
+- docker build --pull --cache-from ledgeriumengineering/ledgeriumgovernance_server --tag ledgeriumengineering/ledgeriumgovernance_server:v$BUILDID .
 - echo $DOCUSENAME
-- docker login -u=golra03 -p=abcd_1234
+#- docker login -u=golra03 -p=abcd_1234
+- docker login -u=$DOCUSENAME -p=$DOCPASSWRD
 - echo "Docker Hub credentials are working"
-- docker tag ledgerappuser/ledgeriumgovernance_server ledgerappuser/ledgeriumgovernance_server:latest
-- docker tag ledgerappuser/ledgeriumgovernance_server ledgerappuser/ledgeriumgovernance_server:v$BUILDID
+- docker tag ledgeriumengineering/ledgeriumgovernance_server ledgeriumengineering/ledgeriumgovernance_server:latest
+- docker tag ledgeriumengineering/ledgeriumgovernance_server ledgerappledgeriumengineeringuser/ledgeriumgovernance_server:v$BUILDID
 script:
 - docker ps -a
 after_success:
-- docker push ledgerappuser/ledgeriumgovernance_server:v$BUILDID && docker push ledgerappuser/ledgeriumgovernance_server:latest
+- docker push ledgeraledgeriumengineeringppuser/ledgeriumgovernance_server:v$BUILDID && docker push ledgeriumengineering/ledgeriumgovernance_server:latest
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_887211266452_key -iv $encrypted_887211266452_iv
   -in deploy_rsa.enc -out ./deploy_rsa -d
